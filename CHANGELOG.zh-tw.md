@@ -2,6 +2,7 @@
 ## 未釋出版本
 - 暫無
 
+<<<<<<< HEAD
 ## v2.2.2 (for 1.14.x)
 - 新增義大利文(it)翻譯（感謝 [Leomixer17](https://www.spigotmc.org/members/leomixer17.140367/)）
 
@@ -18,6 +19,8 @@
 ## v2.1.1 (for 1.13.x)
 - 修正合成旗幟時缺少染料的錯誤
 
+=======
+>>>>>>> parent of 7655529... Bump version
 ## v2.1.0 (for 1.13.x)
 - 新增簡易預覽模式（可於「建立旗幟」選單切換）
   - https://imgur.com/a/ydF8frS

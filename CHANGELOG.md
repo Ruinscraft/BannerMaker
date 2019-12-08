@@ -2,6 +2,7 @@
 ## Unreleased Version
 - Nothing
 
+<<<<<<< HEAD
 ## v2.2.2 (for 1.14.x)
 - Add Italian(it) translation (Thanks [Leomixer17](https://www.spigotmc.org/members/leomixer17.140367/))
 
@@ -18,6 +19,8 @@
 ## v2.1.1 (for 1.13.x)
 - Fix bug of missing dye materials when crafting banners
 
+=======
+>>>>>>> parent of 7655529... Bump version
 ## v2.1.0 (for 1.13.x)
 - Add simple preview mode (Toggleable in "Create Banner" menu)
   - https://imgur.com/a/ydF8frS
