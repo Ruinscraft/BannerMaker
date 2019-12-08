@@ -6,6 +6,7 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
@@ -22,21 +23,21 @@ import static club.kid7.bannermaker.configuration.Language.tl;
 
 public class BannerUtil {
     /**
-     * 檢查ItemStack是否為旗幟
+     * æª¢æŸ¥ItemStackæ˜¯å�¦ç‚ºæ——å¹Ÿ
      *
-     * @param itemStack 欲檢查的物品
+     * @param itemStack æ¬²æª¢æŸ¥çš„ç‰©å“�
      * @return boolean
      */
     static public boolean isBanner(ItemStack itemStack) {
-        //FIXME: 需要準確的判斷方式
+        //FIXME: éœ€è¦�æº–ç¢ºçš„åˆ¤æ–·æ–¹å¼�
         return itemStack != null && itemStack.getType().name().contains("BANNER");
     }
 
     /**
-     * 檢查ItemStack是否為字母旗幟
-     * FIXME: 暫時只檢查名稱是否為單一字元帶顏色，判斷依據須更精確
+     * æª¢æŸ¥ItemStackæ˜¯å�¦ç‚ºå­—æ¯�æ——å¹Ÿ
+     * FIXME: æš«æ™‚å�ªæª¢æŸ¥å��ç¨±æ˜¯å�¦ç‚ºå–®ä¸€å­—å…ƒå¸¶é¡�è‰²ï¼Œåˆ¤æ–·ä¾�æ“šé ˆæ›´ç²¾ç¢º
      *
-     * @param itemStack 欲檢查的物品
+     * @param itemStack æ¬²æª¢æŸ¥çš„ç‰©å“�
      * @return boolean
      */
     static public boolean isAlphabetBanner(ItemStack itemStack) {
@@ -62,33 +63,33 @@ public class BannerUtil {
     }
 
     /**
-     * 取得旗幟材料清單
+     * å�–å¾—æ——å¹Ÿæ��æ–™æ¸…å–®
      *
-     * @param banner 欲取得材料清單之旗幟
+     * @param banner æ¬²å�–å¾—æ��æ–™æ¸…å–®ä¹‹æ——å¹Ÿ
      * @return List<ItemStack>
      */
     static public List<ItemStack> getMaterials(ItemStack banner) {
         List<ItemStack> materialList = new ArrayList<>();
-        //只檢查旗幟
+        //å�ªæª¢æŸ¥æ——å¹Ÿ
         if (!isBanner(banner)) {
             return materialList;
         }
-        //基本材料
-        //木棒
+        //åŸºæœ¬æ��æ–™
+        //æœ¨æ£’
         ItemStack stick = new ItemStack(Material.STICK, 1);
         materialList.add(stick);
-        //羊毛
-        //顏色
+        //ç¾Šæ¯›
+        //é¡�è‰²
         DyeColor baseColor = DyeColorUtil.of(banner.getType());
-        //羊毛
+        //ç¾Šæ¯›
         ItemStack wool = new ItemStack(DyeColorUtil.toWoolMaterial(baseColor), 6);
         materialList.add(wool);
-        //Pattern材料
+        //Patternæ��æ–™
         Inventory materialInventory = Bukkit.createInventory(null, 54);
         BannerMeta bm = (BannerMeta) banner.getItemMeta();
-        //逐Pattern計算
+        //é€�Patternè¨ˆç®—
         for (Pattern pattern : bm.getPatterns()) {
-            //所需染料
+            //æ‰€éœ€æŸ“æ–™
             Dye dye = new Dye();
             dye.setColor(pattern.getColor());
             switch (pattern.getPattern()) {
@@ -174,35 +175,35 @@ public class BannerUtil {
                     break;
             }
         }
-        //加到暫存清單
+        //åŠ åˆ°æš«å­˜æ¸…å–®
         List<ItemStack> patternMaterials = new ArrayList<>();
         Collections.addAll(patternMaterials, materialInventory.getContents());
-        //重新排序
+        //é‡�æ–°æŽ’åº�
         InventoryUtil.sort(patternMaterials);
-        //將材料加到清單中
+        //å°‡æ��æ–™åŠ åˆ°æ¸…å–®ä¸­
         materialList.addAll(patternMaterials);
 
         return materialList;
     }
 
     /**
-     * 檢查是否擁有足夠材料
+     * æª¢æŸ¥æ˜¯å�¦æ“�æœ‰è¶³å¤ æ��æ–™
      *
-     * @param inventory 指定物品欄
-     * @param banner    旗幟
-     * @return 是否擁有足夠材料
+     * @param inventory æŒ‡å®šç‰©å“�æ¬„
+     * @param banner    æ——å¹Ÿ
+     * @return æ˜¯å�¦æ“�æœ‰è¶³å¤ æ��æ–™
      */
     static public boolean hasEnoughMaterials(Inventory inventory, ItemStack banner) {
-        //只檢查旗幟
+        //å�ªæª¢æŸ¥æ——å¹Ÿ
         if (!isBanner(banner)) {
             return false;
         }
-        //材料清單
+        //æ��æ–™æ¸…å–®
         List<ItemStack> materials = getMaterials(banner);
         for (ItemStack material : materials) {
-            //任何一項不足
+            //ä»»ä½•ä¸€é …ä¸�è¶³
             if (!inventory.containsAtLeast(material, material.getAmount())) {
-                //直接回傳false
+                //ç›´æŽ¥å›žå‚³false
                 return false;
             }
         }
@@ -210,13 +211,13 @@ public class BannerUtil {
     }
 
     /**
-     * 是否可以在生存模式合成（不超過6個pattern）
+     * æ˜¯å�¦å�¯ä»¥åœ¨ç”Ÿå­˜æ¨¡å¼�å�ˆæˆ�ï¼ˆä¸�è¶…é�Ž6å€‹patternï¼‰
      *
-     * @param banner 旗幟
-     * @return 是否可以合成
+     * @param banner æ——å¹Ÿ
+     * @return æ˜¯å�¦å�¯ä»¥å�ˆæˆ�
      */
     static public boolean isCraftableInSurvival(ItemStack banner) {
-        //只檢查旗幟
+        //å�ªæª¢æŸ¥æ——å¹Ÿ
         if (!isBanner(banner)) {
             return false;
         }
@@ -225,22 +226,22 @@ public class BannerUtil {
     }
 
     /**
-     * 從物品欄移除材料
+     * å¾žç‰©å“�æ¬„ç§»é™¤æ��æ–™
      *
-     * @param inventory 指定物品欄
-     * @param banner    旗幟
-     * @return 是否順利移除材料
+     * @param inventory æŒ‡å®šç‰©å“�æ¬„
+     * @param banner    æ——å¹Ÿ
+     * @return æ˜¯å�¦é †åˆ©ç§»é™¤æ��æ–™
      */
     static private boolean removeMaterials(Inventory inventory, ItemStack banner) {
-        //只檢查旗幟
+        //å�ªæª¢æŸ¥æ——å¹Ÿ
         if (!isBanner(banner)) {
             return false;
         }
-        //材料必須足夠
+        //æ��æ–™å¿…é ˆè¶³å¤ 
         if (!hasEnoughMaterials(inventory, banner)) {
             return false;
         }
-        //材料清單
+        //æ��æ–™æ¸…å–®
         List<ItemStack> materials = getMaterials(banner);
         HashMap<Integer, ItemStack> itemCannotRemoved = inventory.removeItem(materials.toArray(new ItemStack[0]));
         if (!itemCannotRemoved.isEmpty()) {
@@ -250,32 +251,32 @@ public class BannerUtil {
     }
 
     /**
-     * 給予玩家單一旗幟
+     * çµ¦äºˆçŽ©å®¶å–®ä¸€æ——å¹Ÿ
      *
-     * @param player 要給予物品的玩家
-     * @param banner 要給予的旗幟
-     * @return 是否成功給予
+     * @param player è¦�çµ¦äºˆç‰©å“�çš„çŽ©å®¶
+     * @param banner è¦�çµ¦äºˆçš„æ——å¹Ÿ
+     * @return æ˜¯å�¦æˆ�åŠŸçµ¦äºˆ
      */
     public static boolean buy(Player player, ItemStack banner) {
-        //檢查是否啟用經濟
+        //æª¢æŸ¥æ˜¯å�¦å•Ÿç”¨ç¶“æ¿Ÿ
         if (BannerMaker.getInstance().econ == null) {
-            //未啟用經濟，強制失敗
+            //æœªå•Ÿç”¨ç¶“æ¿Ÿï¼Œå¼·åˆ¶å¤±æ•—
             player.sendMessage(MessageUtil.format(true, "&cError: Economy not supported"));
             return false;
         }
-        //價格
+        //åƒ¹æ ¼
         double price = EconUtil.getPrice(banner);
-        //檢查財產是否足夠
+        //æª¢æŸ¥è²¡ç”¢æ˜¯å�¦è¶³å¤ 
         if (!BannerMaker.getInstance().econ.has(player, price)) {
-            //財產不足
+            //è²¡ç”¢ä¸�è¶³
             player.sendMessage(MessageUtil.format(true, "&c" + tl("general.no-money")));
             return false;
         }
-        //扣款
+        //æ‰£æ¬¾
         EconomyResponse response = BannerMaker.getInstance().econ.withdrawPlayer(player, price);
-        //檢查交易是否成功
+        //æª¢æŸ¥äº¤æ˜“æ˜¯å�¦æˆ�åŠŸ
         if (!response.transactionSuccess()) {
-            //交易失敗
+            //äº¤æ˜“å¤±æ•—
             player.sendMessage(MessageUtil.format(true, "&cError: " + response.errorMessage));
             return false;
         }
@@ -285,19 +286,19 @@ public class BannerUtil {
     }
 
     /**
-     * 使用材料合成旗幟
-     * FIXME: 即使pattern過多，也仍然能合成，可能需要權限限制
+     * ä½¿ç”¨æ��æ–™å�ˆæˆ�æ——å¹Ÿ
+     * FIXME: å�³ä½¿patterné�Žå¤šï¼Œä¹Ÿä»�ç„¶èƒ½å�ˆæˆ�ï¼Œå�¯èƒ½éœ€è¦�æ¬Šé™�é™�åˆ¶
      *
-     * @param player 要給予物品的玩家
-     * @param banner 要給予的旗幟
-     * @return 是否成功給予
+     * @param player è¦�çµ¦äºˆç‰©å“�çš„çŽ©å®¶
+     * @param banner è¦�çµ¦äºˆçš„æ——å¹Ÿ
+     * @return æ˜¯å�¦æˆ�åŠŸçµ¦äºˆ
      */
     public static boolean craft(Player player, ItemStack banner) {
-        //檢查材料
-        if (!hasEnoughMaterials(player.getInventory(), banner)) {
+        //æª¢æŸ¥æ��æ–™
+        if (!hasEnoughMaterials(player.getInventory(), banner) && player.getGameMode() != GameMode.CREATIVE) {
             return false;
         }
-        //移除材料
+        //ç§»é™¤æ��æ–™
         removeMaterials(player.getInventory(), banner);
 
         InventoryUtil.give(player, banner);
@@ -305,18 +306,18 @@ public class BannerUtil {
     }
 
     /**
-     * 取得旗幟在玩家存檔中的Key
+     * å�–å¾—æ——å¹Ÿåœ¨çŽ©å®¶å­˜æª”ä¸­çš„Key
      *
-     * @param banner 欲檢查之旗幟
+     * @param banner æ¬²æª¢æŸ¥ä¹‹æ——å¹Ÿ
      * @return String
      */
     static public String getKey(ItemStack banner) {
-        //只處理旗幟
+        //å�ªè™•ç�†æ——å¹Ÿ
         if (!isBanner(banner)) {
             return null;
         }
         String key;
-        //嘗試取出key
+        //å˜—è©¦å�–å‡ºkey
         try {
             key = HiddenStringUtil.extractHiddenString(banner.getItemMeta().getLore().get(0));
         } catch (Exception exception) {
@@ -326,26 +327,26 @@ public class BannerUtil {
     }
 
     /**
-     * 取得旗幟名稱，若無名稱則嘗試取得KEY
+     * å�–å¾—æ——å¹Ÿå��ç¨±ï¼Œè‹¥ç„¡å��ç¨±å‰‡å˜—è©¦å�–å¾—KEY
      *
-     * @param banner 欲檢查之旗幟
+     * @param banner æ¬²æª¢æŸ¥ä¹‹æ——å¹Ÿ
      * @return String
      */
     static public String getName(ItemStack banner) {
-        //只處理旗幟
+        //å�ªè™•ç�†æ——å¹Ÿ
         if (!isBanner(banner)) {
             return null;
         }
-        //先試著取得自訂名稱
+        //å…ˆè©¦è‘—å�–å¾—è‡ªè¨‚å��ç¨±
         if (banner.hasItemMeta() && banner.getItemMeta().hasDisplayName()) {
             return banner.getItemMeta().getDisplayName();
         }
-        //嘗試取得key
+        //å˜—è©¦å�–å¾—key
         String key = BannerUtil.getKey(banner);
         if (key != null) {
             return key;
         }
-        //若都沒有，回傳空字串
+        //è‹¥éƒ½æ²’æœ‰ï¼Œå›žå‚³ç©ºå­—ä¸²
         return "";
     }
 
@@ -395,49 +396,49 @@ public class BannerUtil {
 
     static public HashMap<Integer, ItemStack> getPatternRecipe(final ItemStack banner, int step) {
         HashMap<Integer, ItemStack> recipe = Maps.newHashMap();
-        //填滿空氣
+        //å¡«æ»¿ç©ºæ°£
         for (int i = 0; i < 10; i++) {
             recipe.put(i, new ItemStack(Material.AIR));
         }
-        //只處理旗幟
+        //å�ªè™•ç�†æ——å¹Ÿ
         if (!isBanner(banner)) {
             return recipe;
         }
         BannerMeta bm = (BannerMeta) banner.getItemMeta();
         int totalStep = bm.numberOfPatterns() + 1;
-        //顏色
+        //é¡�è‰²
         DyeColor baseColor = DyeColorUtil.of(banner.getType());
         if (step == 1) {
-            //第一步，旗幟合成
-            //羊毛
+            //ç¬¬ä¸€æ­¥ï¼Œæ——å¹Ÿå�ˆæˆ�
+            //ç¾Šæ¯›
             ItemStack wool = new ItemStack(DyeColorUtil.toWoolMaterial(baseColor));
             for (int i = 0; i < 6; i++) {
                 recipe.put(i, wool.clone());
             }
-            //木棒
+            //æœ¨æ£’
             ItemStack stick = new ItemStack(Material.STICK);
             recipe.put(7, stick);
         } else if (step <= totalStep) {
-            //新增Pattern
-            //當前banner
+            //æ–°å¢žPattern
+            //ç•¶å‰�banner
             ItemStack prevBanner = new ItemStack(DyeColorUtil.toBannerMaterial(baseColor));
             BannerMeta pbm = (BannerMeta) prevBanner.getItemMeta();
-            //新增至目前的Pattern
+            //æ–°å¢žè‡³ç›®å‰�çš„Pattern
             for (int i = 0; i < step - 2; i++) {
                 pbm.addPattern(bm.getPattern(i));
             }
             prevBanner.setItemMeta(pbm);
-            //當前Pattern
+            //ç•¶å‰�Pattern
             Pattern pattern = bm.getPattern(step - 2);
-            //所需染料
+            //æ‰€éœ€æŸ“æ–™
             Dye dye = new Dye();
             dye.setColor(pattern.getColor());
             ItemStack dyeItem = DyeColorUtil.toDyeItemStack(dye.getColor(), 1);
-            //旗幟位置
+            //æ——å¹Ÿä½�ç½®
             int bannerPosition = 4;
-            //染料位置
+            //æŸ“æ–™ä½�ç½®
             List<Integer> dyePosition = Collections.emptyList();
-            //根據Pattern決定位置
+            //æ ¹æ“šPatternæ±ºå®šä½�ç½®
             switch (pattern.getPattern()) {
                 case SQUARE_BOTTOM_LEFT:
                     dyePosition = Collections.singletonList(6);
@@ -587,17 +588,17 @@ public class BannerUtil {
                     }
                     break;
             }
-            //放置旗幟與染料
+            //æ”¾ç½®æ——å¹Ÿèˆ‡æŸ“æ–™
             recipe.put(bannerPosition, prevBanner);
             for (int i : dyePosition) {
                 recipe.put(i, dyeItem.clone());
             }
         }
-        //合成結果
-        //當前banner
+        //å�ˆæˆ�çµ�æžœ
+        //ç•¶å‰�banner
         ItemStack currentBanner = new ItemStack(DyeColorUtil.toBannerMaterial(baseColor));
         BannerMeta cbm = (BannerMeta) currentBanner.getItemMeta();
-        //新增至目前的Pattern
+        //æ–°å¢žè‡³ç›®å‰�çš„Pattern
         for (int i = 0; i < step - 1; i++) {
             cbm.addPattern(bm.getPattern(i));
         }
